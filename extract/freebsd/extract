@@ -1,0 +1,53 @@
+#!/usr/bin/make -f
+
+-include ../config.mk
+include ../common.mk
+
+# NOTE: this is odd but lets us do here-documents in snippets
+.ONESHELL:
+
+KERNEL ?= tests/kernel-10.3-RELEASE
+
+freebsd-syscall-table.raw-objdump: $(KERNEL)
+	read addr size <<<"$$( readelf -s "$<" | grep '[[:blank:]]sysent$$' | sed 's/^[[:blank:]]//' | tr -s '[:blank:]' '\t' | cut -f2-3 | head -n1)"
+	echo "table addr is $$addr; size is $$size" 1>&2
+
+test:
+	cat <<-EOF > "$@"
+	blah
+	EOF
+
+elf-dump-symbol:
+	cat <<-EOF > "$@"
+\#!/bin/bash
+file="$$1"
+sym="$$2"
+read addr size shndx <<<"$$( readelf -s "$$file" | grep "[[:blank:]]$$sym\\$$" | \
+    sed 's/^[[:blank:]]*//' | tr -s '[:blank:]' '\t' | cut -f2,3,7 | head -n1)"
+echo "addr is $$addr" 1>&2
+echo "size is $$size" 1>&2
+echo "shndx is $$shndx" 1>&2
+read scnaddr scnfileoff <<<"$$( readelf -WS "$$file" | sed 's/^[[:blank:]]*//' | \
+    grep "^\[ *$$shndx\]" | \
+    sed "s/^\[ *$$shndx\][[:blank:]]*//" | \
+    tr -s '[:blank:]' '\t' | tee /dev/stderr | cut -f3,4 | head -n1 )"\
+echo "scnaddr is $$scnaddr" 1>&2 \
+echo "scnfileoff is $$scnfileoff" 1>&2 \
+tgtoff="$$(( $$addr - $$scnaddr ))"\
+dd if="$$file" skip=$$(( 0x$$scnfileoff + 0x$$tgtoff )) bs=1 count=$$size\
+EOF
+
+# We need to reverse the byte order in the objdump words we get out. 
+# Also, egregiously guess that there won't be more than 1000 syscalls.
+freebsd-syscall-table.dump: freebsd-syscall-table.raw-objdump
+	cat "$<" | \
+	egrep '^ *([a-f0-9]{16})' | sed -r 's/^ *([a-f0-9]{16}) ([a-f0-9]{8}) ([a-f0-9]{8}) ([a-f0-9]{8}) ([a-f0-9]{8}).*/\2\3\n\4\5/' | \
+	sed -r 's/([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/\8\7\6\5\4\3\2\1/' | \
+	head -n 1000 > "$@"
+
+linux-syscall-addrs: linux-syscall-table.dump $(LINUX_SYSTEM_MAP)
+	cat "$<" | \
+	(ctr=0; while read addr; do \
+		echo -n "$$ctr "; cat "$(LINUX_SYSTEM_MAP)" | grep "^$$addr" | egrep -v '[[:blank:]]+(compat_)?SyS_[a-zA-Z0-9_]+$$' | uniq -w16 ; \
+		ctr=`expr $$ctr + 1`; \
+	done ) | tr -s '[:blank:]' '\t' | sed -r '/0{16}/ q' > "$@" || (rm -f "$@"; false)
