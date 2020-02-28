@@ -1,0 +1,8 @@
+extract/linux/System.map-3.8.0-19-generic
+extract/linux/extract-vmlinux
+extract/linux/linux-syscall-addrs
+extract/linux/linux-syscall-table.dump
+extract/linux/linux-syscall-table.raw-objdump
+extract/linux/linux-syscalls.list
+extract/linux/vmlinux*
+extract/linux/vmlinuz*
