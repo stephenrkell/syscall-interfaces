@@ -117,3 +117,6 @@ Makefile.in
 .fuse_hidden*
 .nfs*
 .dropbox*
+
+contrib/config.mk
+contrib/env.sh
