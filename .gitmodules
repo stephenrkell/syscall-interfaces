@@ -1,33 +1,33 @@
-[submodule "submodules/libdwarf"]
-	path = submodules/libdwarf
+[submodule "contrib/libdwarf"]
+	path = contrib/libdwarf
 	url = https://github.com/ojno/libdwarf
-[submodule "submodules/libcxxfileno"]
-	path = submodules/libcxxfileno
+[submodule "contrib/libcxxfileno"]
+	path = contrib/libcxxfileno
 	url = https://github.com/ojno/libcxxfileno
-[submodule "submodules/libsrk31cxx"]
-	path = submodules/libsrk31cxx
+[submodule "contrib/libsrk31cxx"]
+	path = contrib/libsrk31cxx
 	url = https://github.com/ojno/libsrk31cxx
-[submodule "submodules/libdwarfpp"]
-	path = submodules/libdwarfpp
+[submodule "contrib/libdwarfpp"]
+	path = contrib/libdwarfpp
 	url = https://github.com/ojno/libdwarfpp
-[submodule "submodules/libcxxgen"]
-	path = submodules/libcxxgen
+[submodule "contrib/libcxxgen"]
+	path = contrib/libcxxgen
 	url = https://github.com/ojno/libcxxgen
-[submodule "submodules/dwarfidl"]
-	path = submodules/dwarfidl
+[submodule "contrib/dwarfidl"]
+	path = contrib/dwarfidl
 	url = https://github.com/ojno/dwarfidl
-[submodule "submodules/liballocs"]
-	path = submodules/liballocs
+[submodule "contrib/liballocs"]
+	path = contrib/liballocs
 	url = https://github.com/ojno/liballocs
-[submodule "submodules/libfootprints"]
-	path = submodules/libfootprints
+[submodule "contrib/libfootprints"]
+	path = contrib/libfootprints
 	url = https://github.com/ojno/libfootprints
-[submodule "submodules/trap-syscalls"]
-	path = submodules/trap-syscalls
+[submodule "contrib/trap-syscalls"]
+	path = contrib/trap-syscalls
 	url = https://github.com/ojno/trap-syscalls
-[submodule "submodules/libantlr3cxx"]
-	path = submodules/libantlr3cxx
+[submodule "contrib/libantlr3cxx"]
+	path = contrib/libantlr3cxx
 	url = https://github.com/ojno/libantlr3cxx
-[submodule "submodules/libfootprints-ocaml"]
-	path = submodules/libfootprints-ocaml
+[submodule "contrib/libfootprints-ocaml"]
+	path = contrib/libfootprints-ocaml
 	url = https://github.com/ojno/libfootprints-ocaml
