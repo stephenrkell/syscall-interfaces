@@ -7,9 +7,3 @@ DWARFHPP ?= $(DWARFIDL_DIR)/src/dwarfhpp
 else
 DWARFHPP ?= dwarfhpp
 endif
-
-ifneq ($(realpath $(LIBALLOCS_DIR)/tools/ifacetypes),)
-IFACETYPES ?= $(LIBALLOCS_DIR)/tools/ifacetypes
-else
-IFACETYPES ?= ifacetypes
-endif

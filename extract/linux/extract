@@ -35,7 +35,7 @@ DWARFHPP ?= dwarfhpp
 endif
 
 .PHONY: default
-default: linux-syscall-ifacetypes.c
+default: linux-syscalls.list linux-syscall-addrs
 
 .PHONY: ensure_kernel_images
 ensure_kernel_images: $(LINUX_ZIMAGE) $(LINUX_SYSTEM_MAP) $(LINUX_IMAGE_DWARF)

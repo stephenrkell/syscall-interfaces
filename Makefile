@@ -1,17 +1,14 @@
-.PHONY: default install all
+# By default, we generate a dwarfidl description of the interface of
+# the currently running kernel.
+THIS_MAKEFILE := $(lastword $(MAKEFILE_LIST))
+srcroot := $(realpath $(dir $(THIS_MAKEFILE)))
+SYS := $(shell uname -s | tr A-Z a-z )
 
-default: install
+default: lib/$(SYS)-syscall-addrs lib/$(SYS)-syscalls.list
 
-# before going any further, ensure we've copied in the kernel images
-# to avoid asking for sudo halfway through
-all install: ensure_kernel_images
+# sysfoot (and maybe other tools) can be used to help maintain, manually,
+# an expanded spec. Ideally dwarfidl would support "separate annotation"
+# but maybe it can just be a diff for now.
 
-.PHONY: ensure_kernel_images
-ensure_kernel_images:
-	$(MAKE) -C scripts -f kernel-objects.mk ensure_kernel_images
-
-############################################################ Submodules
-
-scripts/%: | install_submodules_libdwarfpp install_submodules_liballocs
-	$(MAKE) -C scripts -f kernel-objects.mk "$*"
-
+lib/$(SYS)-syscall-addrs lib/$(SYS)-syscalls.list:
+	mkdir -p lib && cd lib && $(MAKE) -f $(srcroot)/extract/$(SYS)/extract
