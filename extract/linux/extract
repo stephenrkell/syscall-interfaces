@@ -34,12 +34,6 @@ else
 DWARFHPP ?= dwarfhpp
 endif
 
-ifneq ($(realpath $(LIBALLOCS_DIR)/tools/ifacetypes),)
-IFACETYPES ?= $(LIBALLOCS_DIR)/tools/ifacetypes
-else
-IFACETYPES ?= ifacetypes
-endif
-
 .PHONY: default
 default: linux-syscall-ifacetypes.c
 
@@ -113,9 +107,6 @@ linux-syscalls.h: linux-syscalls.list $(LINUX_IMAGE_DWARF)
 linux-syscall-macros.h: linux-syscalls.list linux-syscall-addrs
 	(cat linux-syscall-addrs | cut -f4,1 | sed 's/\(.*\)\t\(.*\)/#ifndef __NUM_\2\n#define __NUM_\2 \1\n#endif/'; \
 	cat "$<" | sed 's/^\(.*\)/SYSCALL(\1)/') > "$@" 
-
-linux-syscall-ifacetypes.c: linux-syscalls.list $(LINUX_IMAGE_DWARF)
-	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH) $(IFACETYPES) $(LINUX_IMAGE_DWARF) < linux-syscalls.list > "$@" || (rm -f "$@"; false)
 
 # ----------------------------------------
 # The following are not very reliable and are mainly left here for interest
