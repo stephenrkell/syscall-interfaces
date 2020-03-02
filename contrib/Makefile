@@ -1,21 +1,29 @@
 THIS_MAKEFILE := $(lastword $(MAKEFILE_LIST))
 CONTRIB := $(realpath $(dir $(THIS_MAKEFILE)))
 
-CONFIG_MK += include $$(dir $$(lastword $$(MAKEFILE_LIST)))/dwarfidl/contrib/config.mk
+CONFIG_MK += include $(CONTRIB)/dwarfidl/contrib/config.mk\n
 
-default: env.sh config.mk build-dwarfidl \
-  build-libfootprints
+.PHONY: default
+default: env.sh config.mk build-dwarfidl
 
 # ----------------------------dwarfidl
 
-dwarfidl/config.status: dwarfidl/contrib/env.sh
-	cd dwarfidl && ./contrib/env.sh && ./configure --prefix=/usr/local
+.PHONY: build-dwarfidl
+build-dwarfidl: dwarfidl/lib/libdwarfidl.so
+
+dwarfidl/config.status: dwarfidl/contrib/env.sh dwarfidl/configure
+	cd dwarfidl && . contrib/env.sh && ./configure --prefix=/usr/local
+
+dwarfidl/configure:
+	cd dwarfidl && ./autogen.sh
 
 dwarfidl/contrib/env.sh:
 	$(MAKE) -C dwarfidl/contrib
 
 dwarfidl/lib/libdwarfidl.so: dwarfidl/config.status
 	$(MAKE) -C dwarfidl
+
+export DWARFIDL_DIR := $(CONTRIB)/dwarfidl
 
 # ----------------------------
 
@@ -26,7 +34,7 @@ CONFIG_MK += \n\nenv.sh:\n\tprintf '"'"'$(foreach var,$(varlist),export $(var)="
 config.mk:
 	printf '$(CONFIG_MK)' > "$@" || (rm -f "$@"; false)
 
-env.sh: config.mk
+env.sh: config.mk build-dwarfidl # because our config.mk includes dwarfidl's
 	$(MAKE) -f "$<" "$@"
 
 clean::

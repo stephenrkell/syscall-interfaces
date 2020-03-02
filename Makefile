@@ -4,7 +4,12 @@ THIS_MAKEFILE := $(lastword $(MAKEFILE_LIST))
 srcroot := $(realpath $(dir $(THIS_MAKEFILE)))
 SYS := $(shell uname -s | tr A-Z a-z )
 
-default: lib/$(SYS)-syscall-addrs lib/$(SYS)-syscalls.list
+.PHONY: default
+default: contrib lib/$(SYS)-syscall-addrs lib/$(SYS)-syscalls.list
+
+.PHONY: contrib
+contrib:
+	$(MAKE) -C contrib
 
 # sysfoot (and maybe other tools) can be used to help maintain, manually,
 # an expanded spec. Ideally dwarfidl would support "separate annotation"
