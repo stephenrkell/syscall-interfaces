@@ -3,7 +3,7 @@
 -include config.mk
 
 VERSION ?= $(shell uname -r)
-version := $(version)
+version := $(VERSION)
 
 linux_zimage_basename := vmlinuz-$(version)
 ifneq ($(realpath /boot/$(linux_zimage_basename)),)
@@ -114,6 +114,8 @@ linux-syscall-addrs-$(version): linux-syscall-table-$(version).dump $(LINUX_SYST
 		ctr=`expr $$ctr + 1`; \
 	done ) | tr -s '[:blank:]' '\t' | sed -r '/0{16}/ q' > "$@" || (rm -f "$@"; false)
 
+# linux-syscalls.list is just a list of names, so it is *not* given a versioned filename.
+# The rationale is that the set only increases, so any "up-to-date" version should do.
 # Delete weak symbols, since these aren't actually implemented syscalls.
 # Delete the last line, because it's a terminator
 linux-syscalls.list: linux-syscall-addrs-$(version)
